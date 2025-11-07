@@ -423,7 +423,7 @@
     </select>
   </label>
 
-  <label class="flex flex-col" for="importeHipBanco1">Importe HIP Banco 1 (€)
+  <label class="flex flex-col req" for="importeHipBanco1">Importe HIP Banco 1 (€)
     <input id="importeHipBanco1" type="number" min="0" step="1000" class="border rounded">
   </label>
 
@@ -484,7 +484,7 @@
 <!-- ═════ SCRIPTS ═════ -->
 <script>
 /* ----- listas de bancos en desplegables (sin "No bank selected") ----- */
-const bancos = ['Abanca','Bankinter','BBVA','BSCH','CaixaBank','CR Extremadura','CR Granada','CR Teruel','Deutsche Bank','EuroCajaRural','EVO','Globalcaja','Hipotecas.com','Ibercaja','ING','Kutxabank','Laboral Kutxa','No Bank Fee','Pichincha','Sabadell','Santander','Targobank','Unicaja','UCI','Banca March'];
+const bancos = ['Abanca','Banca 360','Banca March','Bankinter','BBVA','BSCH','CaixaBank','CR Asturias','CR del Sur','CR Extremadura','CR Granada','CR Teruel','Deutsche Bank','EuroCajaRural','EVO','Globalcaja','Hipotecas.com','Ibercaja','ING','Kutxabank','Laboral Kutxa','MyInvestor','No Bank Fee','Pichincha','Sabadell','Santander','Targobank','UCI','Unicaja'];
 ['bancoCliente','entidadesEnviar1','entidadesEnviar2','entidadesEnviar3','entidadesEnviar4']
   .forEach(id=>{
     const sel=document.getElementById(id);
@@ -557,7 +557,7 @@ const BASE_TITULO = 'Calculadora Hipotecaria – Bayteca';
 const OBLIGATORIOS_BASE = [
   'dealId','tipoOperacion','estadoVivienda','tipoHipoteca','provincia','direccion','codigoPostal',
   'importePropiedad','importeHipoteca','aniosHipoteca',
-  'entidadesEnviar1','membership'
+  'entidadesEnviar1','importeHipBanco1','membership'
 ];
 
 const OBLIGATORIOS_TITULAR1 = [
