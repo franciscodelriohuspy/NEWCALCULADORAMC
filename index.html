@@ -12,7 +12,30 @@
     label, label span { font-size:.875rem; }
     input, select    { padding:.45rem .55rem; }
     #bloqueOperacion > label { font-weight:600; }
-    .req::after { content:" *"; color:#dc2626; }
+    .req::after { content:none; }
+    .req input,
+    .req select,
+    .req textarea {
+      background-color:#f3f4f6;
+    }
+    .spin-lg {
+      padding-right:1.75rem;
+    }
+    .spin-lg::-webkit-inner-spin-button,
+    .spin-lg::-webkit-outer-spin-button {
+      height:auto;
+      width:auto;
+      transform:scale(1.4);
+      margin:0;
+    }
+    .spin-lg::-webkit-inner-spin-button {
+      opacity:1;
+    }
+    .spin-lg::-moz-number-spin-box,
+    .spin-lg::-moz-number-spin-up,
+    .spin-lg::-moz-number-spin-down {
+      transform:scale(1.2);
+    }
     .info-highlight {
       background:#dcfce7;
       border-radius:0.75rem;
@@ -134,13 +157,13 @@
 
   <!-- Campo NUEVO: porcentaje de gastos -->
   <label class="flex flex-col" for="porcGastos">Gastos (%)
-    <input id="porcGastos" type="number" min="0" max="100" step="0.01" value="10" class="border rounded">
+    <input id="porcGastos" type="number" min="0" max="100" step="1" value="10" class="border rounded spin-lg">
     <span class="text-xs text-slate-500">Suele estar entre 8% y 12% (puedes ajustarlo)</span>
   </label>
 
   <label class="flex flex-col" for="tasaStress">Tasa stress (%)
     <div class="flex gap-2 items-center">
-      <input id="tasaStress" type="number" step="0.01" value="3.5" class="border rounded flex-1">
+      <input id="tasaStress" type="number" step="0.1" value="3.5" class="border rounded flex-1 spin-lg">
       <button type="button" id="btnStressDesdeEuribor" class="text-xs bg-slate-600 hover:bg-slate-700 text-white px-2 py-1 rounded">Usar Euríbor</button>
     </div>
   </label>
@@ -171,7 +194,7 @@
     <label for="titular2Existe" class="text-sm font-medium">Existe un segundo titular</label>
   </div>
   <label class="flex flex-col req" for="nombre1">Nombre y apellidos      <input id="nombre1"      class="border rounded"></label>
-  <label class="flex flex-col req" for="telefono1">Teléfono                <input id="telefono1"    class="border rounded"></label>
+  <label class="flex flex-col" for="telefono1">Teléfono                <input id="telefono1"    class="border rounded"></label>
   <label class="flex flex-col" for="email1">E-mail                   <input id="email1"       class="border rounded"></label>
 
   <label class="flex flex-col req" for="tipoContrato1">Tipo de contrato
@@ -199,7 +222,7 @@
     </select>
   </label>
 
-  <label class="flex flex-col req" for="hijos1">Hijos                   <input id="hijos1" type="number" step="1" class="border rounded"></label>
+  <label class="flex flex-col" for="hijos1">Hijos                   <input id="hijos1" type="number" step="1" class="border rounded"></label>
 
   <label class="flex flex-col req" for="tipoDocumento1">Tipo documento
     <select id="tipoDocumento1" class="border rounded">
@@ -233,7 +256,7 @@
 
   <!-- Ingresos S-1 -->
   <h3 class="col-span-full bg-green-600 text-white rounded px-2 py-1 font-semibold">Ingresos S-1</h3>
-  <label class="flex flex-col req" for="salario1">Salario neto            <input id="salario1"       type="number" step="0.01" class="border rounded"></label>
+  <label class="flex flex-col req" for="salario1">Salario neto            <input id="salario1"       type="number" step="100" class="border rounded spin-lg"></label>
   <label class="flex flex-col" for="numPagas1">Nº pagas                <input id="numPagas1"      type="number" step="1"    class="border rounded"></label>
   <label class="flex flex-col" for="otrosIngresos1">Otros ingresos          <input id="otrosIngresos1" type="number" step="0.01" class="border rounded" value="0"></label>
   <label class="flex flex-col" for="notasIngresos1">Notas ingresos          <input id="notasIngresos1" class="border rounded"></label>
@@ -313,7 +336,7 @@
 
   <!-- Ingresos S-2 -->
   <h3 class="col-span-full bg-green-600 text-white rounded px-2 py-1 font-semibold">Ingresos S-2</h3>
-  <label class="flex flex-col req-t2" for="salario2">Salario neto (2)        <input id="salario2"       type="number" step="0.01" class="border rounded"></label>
+  <label class="flex flex-col req-t2" for="salario2">Salario neto (2)        <input id="salario2"       type="number" step="100" class="border rounded spin-lg"></label>
   <label class="flex flex-col" for="numPagas2">Nº pagas (2)            <input id="numPagas2"      type="number" step="1"    class="border rounded"></label>
   <label class="flex flex-col" for="otrosIngresos2">Otros ingresos (2)      <input id="otrosIngresos2" type="number" step="0.01" class="border rounded" value="0"></label>
   <label class="flex flex-col" for="notasIngresos2">Notas ingresos (2)      <input id="notasIngresos2" class="border rounded"></label>
@@ -337,10 +360,18 @@
     </select>
   </label>
 
+  <label class="flex flex-col" for="importeHipBanco1">Importe HIP Banco 1
+    <input id="importeHipBanco1" type="number" min="0" step="0.01" class="border rounded">
+  </label>
+
   <label class="flex flex-col" for="entidadesEnviar2">Entidades a enviar 2
     <select id="entidadesEnviar2" class="border rounded w-full">
       <option value="">—</option>
     </select>
+  </label>
+
+  <label class="flex flex-col" for="importeHipBanco2">Importe HIP Banco 2
+    <input id="importeHipBanco2" type="number" min="0" step="0.01" class="border rounded">
   </label>
 
   <label class="flex flex-col" for="entidadesEnviar3">Entidades a enviar 3
@@ -349,10 +380,18 @@
     </select>
   </label>
 
+  <label class="flex flex-col" for="importeHipBanco3">Importe HIP Banco 3
+    <input id="importeHipBanco3" type="number" min="0" step="0.01" class="border rounded">
+  </label>
+
   <label class="flex flex-col" for="entidadesEnviar4">Entidades a enviar 4
     <select id="entidadesEnviar4" class="border rounded w-full">
       <option value="">—</option>
     </select>
+  </label>
+
+  <label class="flex flex-col" for="importeHipBanco4">Importe HIP Banco 4
+    <input id="importeHipBanco4" type="number" min="0" step="0.01" class="border rounded">
   </label>
 
   <div class="lg:col-span-2 flex flex-col sm:flex-row gap-2">
@@ -363,7 +402,7 @@
     </label>
 
     <label class="flex flex-col flex-1" for="paymentAmount">Payment amount (€)
-      <input id="paymentAmount" type="number" step="0.01" class="border rounded">
+      <input id="paymentAmount" type="number" step="100" class="border rounded spin-lg">
     </label>
   </div>
 </div>
@@ -477,8 +516,8 @@ const OBLIGATORIOS_BASE = [
 ];
 
 const OBLIGATORIOS_TITULAR1 = [
-  'nombre1','telefono1','tipoContrato1','antiguedad1','profesion1','fechaNacimiento1',
-  'estadoCivil1','hijos1','tipoDocumento1','documento1','nacionalidad1','origenFondos1',
+  'nombre1','tipoContrato1','antiguedad1','profesion1','fechaNacimiento1',
+  'estadoCivil1','tipoDocumento1','documento1','nacionalidad1','origenFondos1',
   'paisFondos1','familiarPEP1','salario1'
 ];
 
@@ -1052,7 +1091,7 @@ document.getElementById('enviarBtn').addEventListener('click',()=>{
   });
 
   if(vacios.length){
-    alert('⚠️ Completa los campos marcados con *');
+    alert('⚠️ Completa los campos sombreados como obligatorios.');
     document.getElementById(vacios[0]).focus();
     return;
   }
@@ -1072,8 +1111,11 @@ document.getElementById('enviarBtn').addEventListener('click',()=>{
     .forEach(id=>payload[id]=document.getElementById(id).innerText);
 
   // No enviar bancos si están vacíos (no disparar procesos en CRM)
-  ['bancoCliente','entidadesEnviar1','entidadesEnviar2','entidadesEnviar3','entidadesEnviar4']
-    .forEach(k => { if (!payload[k]) delete payload[k]; });
+  [
+    'bancoCliente',
+    'entidadesEnviar1','entidadesEnviar2','entidadesEnviar3','entidadesEnviar4',
+    'importeHipBanco1','importeHipBanco2','importeHipBanco3','importeHipBanco4'
+  ].forEach(k => { if (!payload[k]) delete payload[k]; });
 
   // llamada a Apps Script backend
   const isGAS = typeof google!=='undefined' && google.script;
