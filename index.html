@@ -1,0 +1,1103 @@
+<!DOCTYPE html> 
+
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora Hipotecaria – Bayteca</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    label, label span { font-size:.875rem; }
+    input, select    { padding:.45rem .55rem; }
+    #bloqueOperacion > label { font-weight:600; }
+    .req::after { content:" *"; color:#dc2626; }
+    .info-highlight {
+      background:#dcfce7;
+      border-radius:0.75rem;
+      padding:0.75rem;
+      gap:0.35rem;
+    }
+    .info-highlight input {
+      background:#f0fdf4;
+      border-color:#bbf7d0;
+      color:#166534;
+      font-weight:600;
+    }
+    .info-highlight input:focus {
+      outline:none;
+      box-shadow:0 0 0 2px rgba(22,101,52,0.35);
+    }
+  </style>
+  <?!= "  <script>const CONSULTOR = " + JSON.stringify(consultor) + "; const CONSULTOR_NOMBRE = " + JSON.stringify(consultorNombre) + ";</script>" ?>
+</head>
+
+<body class="bg-gray-100 py-2">
+  <div class="w-full bg-white shadow-lg rounded-2xl p-4 md:px-8 md:py-6">
+    <h1 class="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+      <span id="tituloCalculadora" class="block text-3xl font-extrabold tracking-tight text-green-900 bg-green-100 px-4 py-2 rounded-xl shadow-sm">Calculadora Hipotecaria – Bayteca</span>
+      <div class="flex gap-2">
+        <button type="button" id="btnRefrescarEuribor" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg">Actualizar Euríbor</button>
+        <button type="button" id="btnResetForm" class="text-xs bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded-lg">Limpiar formulario</button>
+      </div>
+    </h1>
+
+    <form id="formulario" class="space-y-4">
+
+    <input type="hidden" id="consultor" value="">
+
+<!-- ═════ BLOQUE 1 · DATOS DE LA OPERACIÓN ═════ -->
+<h2 data-target="bloqueOperacion" class="bg-black text-white rounded px-2 py-1 font-semibold cursor-pointer select-none">
+  Datos de la operación <span class="float-right">▶</span>
+</h2>
+
+<div id="bloqueOperacion" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 hidden">
+  <label class="flex flex-col req" for="dealId">Deal&nbsp;ID
+    <div class="flex gap-2">
+  <input id="dealId" class="border rounded flex-1" placeholder="ej. 12345">
+  <button type="button" id="extraerDatosBtn" class="text-xs bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded-lg whitespace-nowrap">Extraer datos</button>
+
+</div>
+
+  </label>
+  <label class="flex flex-col info-highlight" for="nombreUsuarioInfo">Nombre del Usuario
+    <input id="nombreUsuarioInfo" class="border rounded bg-green-50" type="text" readonly>
+  </label>
+  <label class="flex flex-col info-highlight" for="comoNosEncontroInfo">Cómo nos encontró
+    <input id="comoNosEncontroInfo" class="border rounded bg-green-50" type="text" readonly>
+  </label>
+  <label class="flex flex-col info-highlight" for="telefonoInfo">Teléfono
+    <input id="telefonoInfo" class="border rounded bg-green-50" type="text" readonly>
+  </label>
+
+  <label class="flex flex-col req" for="tipoOperacion">Tipo de operación
+    <select id="tipoOperacion" class="border rounded">
+      <option value="">—</option><option>Primera residencia</option><option>Segunda residencia</option>
+      <option>Cambio de hipoteca</option><option>Extinción de condominio</option>
+      <option>Autopromoción</option><option>Inversión</option>
+    </select>
+  </label>
+
+  <label class="flex flex-col req" for="estadoVivienda">Estado de vivienda
+    <select id="estadoVivienda" class="border rounded">
+      <option value="">—</option><option>Signed arras</option><option>W/o home</option><option>Refinancing</option><option>House chosen</option>
+    </select>
+  </label>
+
+  <label class="flex flex-col req" for="tipoHipoteca">Tipo de hipoteca
+    <select id="tipoHipoteca" class="border rounded">
+      <option value="">—</option><option>Fixed</option><option>Mixed</option><option>Variable</option>
+      <option>Fixed & Mixed</option><option>Variable & Mixed</option>
+      <option>Fixed & Variable</option><option>Fixed & Mixed & Variable</option>
+    </select>
+  </label>
+
+  <label class="flex flex-col req" for="provincia">Provincia
+    <select id="provincia" class="border rounded">
+      <option value="">—</option><option>Albacete</option><option>Alicante/Alacant</option><option>Almería</option>
+      <option>Araba/Álava</option><option>Asturias</option><option>Ávila</option><option>Badajoz</option>
+      <option>Balears, Illes</option><option>Barcelona</option><option>Bizkaia</option><option>Burgos</option>
+      <option>Cáceres</option><option>Cádiz</option><option>Cantabria</option><option>Castellón/Castelló</option>
+      <option>Ciudad Real</option><option>Córdoba</option><option>Coruña, A</option><option>Cuenca</option>
+      <option>Gipuzkoa</option><option>Girona</option><option>Granada</option><option>Guadalajara</option>
+      <option>Huelva</option><option>Huesca</option><option>Jaén</option><option>León</option>
+      <option>Lleida</option><option>Lugo</option><option>Madrid</option><option>Málaga</option>
+      <option>Murcia</option><option>Navarra</option><option>Ourense</option><option>Palencia</option>
+      <option>Palmas, Las</option><option>Pontevedra</option><option>Rioja, La</option><option>Salamanca</option>
+      <option>Santa Cruz de Tenerife</option><option>Segovia</option><option>Sevilla</option><option>Soria</option>
+      <option>Tarragona</option><option>Teruel</option><option>Toledo</option><option>Valencia/València</option>
+      <option>Valladolid</option><option>Zamora</option><option>Zaragoza</option><option>Ceuta</option>
+      <option>Melilla</option><option>Canarias</option><option>Vitoria</option><option>Oviedo</option><option>TBC</option>
+    </select>
+  </label>
+
+  <label class="flex flex-col" for="ciudadCompra">Ciudad de compra
+    <input id="ciudadCompra" class="border rounded">
+  </label>
+  <label class="flex flex-col req" for="direccion">Dirección
+    <input id="direccion" class="border rounded" placeholder="Calle, número, piso...">
+  </label>
+
+  <label class="flex flex-col req" for="codigoPostal">Código postal
+    <input id="codigoPostal" class="border rounded">
+  </label>
+  <label class="flex flex-col req" for="importePropiedad">Importe propiedad (€)
+    <input id="importePropiedad" type="number" min="0" step="0.01" class="border rounded">
+  </label>
+  <label class="flex flex-col req" for="importeHipoteca">Importe hipoteca (€)
+    <input id="importeHipoteca" type="number" min="0" step="0.01" class="border rounded">
+  </label>
+  <label class="flex flex-col req" for="aniosHipoteca">Años hipoteca
+    <input id="aniosHipoteca" type="number" min="1" step="1" class="border rounded">
+  </label>
+
+  <!-- Campo NUEVO: porcentaje de gastos -->
+  <label class="flex flex-col" for="porcGastos">Gastos (%)
+    <input id="porcGastos" type="number" min="0" max="100" step="0.01" value="10" class="border rounded">
+    <span class="text-xs text-slate-500">Suele estar entre 8% y 12% (puedes ajustarlo)</span>
+  </label>
+
+  <label class="flex flex-col" for="tasaStress">Tasa stress (%)
+    <div class="flex gap-2 items-center">
+      <input id="tasaStress" type="number" step="0.01" value="3.5" class="border rounded flex-1">
+      <button type="button" id="btnStressDesdeEuribor" class="text-xs bg-slate-600 hover:bg-slate-700 text-white px-2 py-1 rounded">Usar Euríbor</button>
+    </div>
+  </label>
+  <label class="flex flex-col" for="bancoCliente">Banco del Cliente
+    <select id="bancoCliente" class="border rounded w-full">
+      <option value="">—</option>
+    </select>
+  </label>
+  <label class="flex flex-col" for="ofertaInicial">Oferta Inicial (si tiene)
+    <input id="ofertaInicial" type="number" min="0" step="0.01" class="border rounded">
+  </label>
+  <label class="flex flex-col lg:col-span-4" for="notasOperacion">Notas para el Banco
+    <input id="notasOperacion" class="border rounded">
+  </label>
+  <label class="flex flex-col lg:col-span-4" for="notasInternasConsultor">Notas Internas Consultor
+    <input id="notasInternasConsultor" class="border rounded">
+  </label>
+</div>
+
+<!-- ═════ BLOQUE 2 · SOLICITANTE 1 ═════ -->
+<h2 data-target="bloqueS1" class="bg-black text-white rounded px-2 py-1 font-semibold cursor-pointer select-none">
+  Solicitante 1 <span class="float-right">▶</span>
+</h2>
+
+<div id="bloqueS1" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 hidden">
+  <div class="sm:col-span-2 lg:col-span-4 flex items-center gap-2">
+    <input id="titular2Existe" type="checkbox" class="h-4 w-4">
+    <label for="titular2Existe" class="text-sm font-medium">Existe un segundo titular</label>
+  </div>
+  <label class="flex flex-col req" for="nombre1">Nombre y apellidos      <input id="nombre1"      class="border rounded"></label>
+  <label class="flex flex-col req" for="telefono1">Teléfono                <input id="telefono1"    class="border rounded"></label>
+  <label class="flex flex-col" for="email1">E-mail                   <input id="email1"       class="border rounded"></label>
+
+  <label class="flex flex-col req" for="tipoContrato1">Tipo de contrato
+    <select id="tipoContrato1" class="border rounded">
+      <option value="">—</option><option>Indefinido</option><option>Temporal</option>
+      <option>Autónomo</option><option>Funcionario</option><option>Pensionista</option>
+      <option>Interino</option><option>Fijo discontínuo</option><option>Desempleado</option><option>Jubilado</option>
+    </select>
+  </label>
+
+  <label class="flex flex-col req" for="antiguedad1">Antigüedad (años)       <input id="antiguedad1" type="number" step="0.1" class="border rounded"></label>
+  <label class="flex flex-col req" for="profesion1">Profesión               <input id="profesion1"  class="border rounded"></label>
+  <label class="flex flex-col req" for="fechaNacimiento1">Fecha nacimiento
+    <input id="fechaNacimiento1" type="date" max="9999-12-31" class="border rounded">
+  </label>
+  <label class="flex flex-col" for="edad1">Edad
+    <input id="edad1" type="number" inputmode="numeric" readonly tabindex="-1" class="border rounded bg-gray-100 text-slate-700">
+  </label>
+
+  <label class="flex flex-col req" for="estadoCivil1">Estado civil
+    <select id="estadoCivil1" class="border rounded">
+      <option value="">—</option><option>Soltero/a</option><option>Casado en Gananciales</option>
+      <option>Casado en Separación de bienes</option>
+      <option>Divorciado</option><option>Viudo</option>
+    </select>
+  </label>
+
+  <label class="flex flex-col req" for="hijos1">Hijos                   <input id="hijos1" type="number" step="1" class="border rounded"></label>
+
+  <label class="flex flex-col req" for="tipoDocumento1">Tipo documento
+    <select id="tipoDocumento1" class="border rounded">
+      <option value="">—</option><option>Pasaporte</option><option>DNI</option><option>NIE / TIE</option>
+    </select>
+  </label>
+
+  <label class="flex flex-col req" for="documento1">Nº documento            <input id="documento1" class="border rounded"></label>
+  <label class="flex flex-col req" for="nacionalidad1">Nacionalidad
+    <div class="flex gap-2 items-center">
+      <input id="nacionalidad1" class="border rounded flex-1" placeholder="Española">
+      <button type="button" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded" data-nacionalidad-btn="nacionalidad1">Confirmar</button>
+    </div>
+  </label>
+
+  <label class="flex flex-col req" for="origenFondos1">Procedencia fondos
+    <select id="origenFondos1" class="border rounded">
+      <option value="">—</option><option>Venta de inmueble</option><option>Trabajo por cuenta ajena</option>
+      <option>Herencia</option><option>Actividad empresarial</option><option>Indemnización</option>
+      <option>Venta de empresas</option><option>Otros</option>
+    </select>
+  </label>
+
+  <label class="flex flex-col req" for="paisFondos1">País procedencia fondos
+    <div class="flex gap-2 items-center">
+      <input id="paisFondos1" class="border rounded flex-1" placeholder="España">
+      <button type="button" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded" data-paisfondos-btn="paisFondos1">Confirmar</button>
+    </div>
+  </label>
+  <label class="flex flex-col req" for="familiarPEP1">Familiar cargo público? <input id="familiarPEP1" class="border rounded"></label>
+
+  <!-- Ingresos S-1 -->
+  <h3 class="col-span-full bg-green-600 text-white rounded px-2 py-1 font-semibold">Ingresos S-1</h3>
+  <label class="flex flex-col req" for="salario1">Salario neto            <input id="salario1"       type="number" step="0.01" class="border rounded"></label>
+  <label class="flex flex-col" for="numPagas1">Nº pagas                <input id="numPagas1"      type="number" step="1"    class="border rounded"></label>
+  <label class="flex flex-col" for="otrosIngresos1">Otros ingresos          <input id="otrosIngresos1" type="number" step="0.01" class="border rounded" value="0"></label>
+  <label class="flex flex-col" for="notasIngresos1">Notas ingresos          <input id="notasIngresos1" class="border rounded"></label>
+
+  <!-- Deudas S-1 -->
+  <h3 class="col-span-full bg-green-600 text-white rounded px-2 py-1 font-semibold">Deudas S-1</h3>
+  <label class="flex flex-col" for="prestamos1">Préstamos totales       <input id="prestamos1"     type="number" step="0.01" class="border rounded"></label>
+  <label class="flex flex-col" for="cuotaPrestamo1">Cuota mensual           <input id="cuotaPrestamo1" type="number" step="0.01" class="border rounded"></label>
+  <label class="flex flex-col" for="notasDeudas1">Notas deudas            <input id="notasDeudas1"   class="border rounded"></label>
+</div>
+
+<!-- ═════ BLOQUE 3 · SOLICITANTE 2 ═════ -->
+<h2 data-target="bloqueS2" class="bg-black text-white rounded px-2 py-1 font-semibold cursor-pointer select-none">
+  Solicitante 2 <span class="float-right">▶</span>
+</h2>
+
+<div id="bloqueS2" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 hidden opacity-50">
+  <label class="flex flex-col req-t2" for="nombre2">Nombre y apellidos (2)  <input id="nombre2"       class="border rounded"></label>
+  <label class="flex flex-col req-t2" for="telefono2">Teléfono (2)            <input id="telefono2"     class="border rounded"></label>
+  <label class="flex flex-col" for="email2">E-mail (2)              <input id="email2"        class="border rounded"></label>
+
+  <label class="flex flex-col req-t2" for="tipoContrato2">Tipo de contrato (2)
+    <select id="tipoContrato2" class="border rounded">
+      <option value="">—</option><option>Indefinido</option><option>Temporal</option>
+      <option>Autónomo</option><option>Funcionario</option><option>Pensionista</option>
+      <option>Interino</option><option>Fijo discontínuo</option><option>Desempleado</option><option>Jubilado</option>
+    </select>
+  </label>
+
+  <label class="flex flex-col req-t2" for="antiguedad2">Antigüedad (2)          <input id="antiguedad2"  type="number" step="0.1" class="border rounded"></label>
+  <label class="flex flex-col req-t2" for="profesion2">Profesión (2)           <input id="profesion2"   class="border rounded"></label>
+  <label class="flex flex-col req-t2" for="fechaNacimiento2">Fecha nacimiento (2)
+    <input id="fechaNacimiento2" type="date" max="9999-12-31" class="border rounded">
+  </label>
+  <label class="flex flex-col" for="edad2">Edad (2)
+    <input id="edad2" type="number" inputmode="numeric" readonly tabindex="-1" class="border rounded bg-gray-100 text-slate-700">
+  </label>
+
+  <label class="flex flex-col req-t2" for="estadoCivil2">Estado civil (2)
+    <select id="estadoCivil2" class="border rounded">
+      <option value="">—</option><option>Soltero/a</option><option>Casado en Gananciales</option>
+      <option>Casado en Separación de bienes</option>
+      <option>Divorciado</option><option>Viudo</option>
+    </select>
+  </label>
+
+  <label class="flex flex-col req-t2" for="hijos2">Hijos (2)               <input id="hijos2"          type="number" step="1" class="border rounded"></label>
+  <label class="flex flex-col req-t2" for="tipoDocumento2">Tipo documento (2)
+    <select id="tipoDocumento2" class="border rounded">
+      <option value="">—</option><option>Pasaporte</option><option>DNI</option><option>NIE / TIE</option>
+    </select>
+  </label>
+
+  <label class="flex flex-col req-t2" for="documento2">Nº documento (2)        <input id="documento2"      class="border rounded"></label>
+  <label class="flex flex-col req-t2" for="nacionalidad2">Nacionalidad (2)
+    <div class="flex gap-2 items-center">
+      <input id="nacionalidad2"   class="border rounded flex-1" placeholder="Española">
+      <button type="button" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded" data-nacionalidad-btn="nacionalidad2">Confirmar</button>
+    </div>
+  </label>
+
+  <label class="flex flex-col req-t2" for="origenFondos2">Procedencia fondos (2)
+    <select id="origenFondos2" class="border rounded">
+      <option value="">—</option><option>Venta de inmueble</option><option>Trabajo por cuenta ajena</option>
+      <option>Herencia</option><option>Actividad empresarial</option><option>Indemnización</option>
+      <option>Venta de empresas</option><option>Otros</option>
+    </select>
+  </label>
+
+  <label class="flex flex-col req-t2" for="paisFondos2">País procedencia fondos (2)
+    <div class="flex gap-2 items-center">
+      <input id="paisFondos2"   class="border rounded flex-1" placeholder="España">
+      <button type="button" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded" data-paisfondos-btn="paisFondos2">Confirmar</button>
+    </div>
+  </label>
+  <label class="flex flex-col req-t2" for="familiarPEP2">Familiar cargo público (2) <input id="familiarPEP2"  class="border rounded"></label>
+
+  <!-- Ingresos S-2 -->
+  <h3 class="col-span-full bg-green-600 text-white rounded px-2 py-1 font-semibold">Ingresos S-2</h3>
+  <label class="flex flex-col req-t2" for="salario2">Salario neto (2)        <input id="salario2"       type="number" step="0.01" class="border rounded"></label>
+  <label class="flex flex-col" for="numPagas2">Nº pagas (2)            <input id="numPagas2"      type="number" step="1"    class="border rounded"></label>
+  <label class="flex flex-col" for="otrosIngresos2">Otros ingresos (2)      <input id="otrosIngresos2" type="number" step="0.01" class="border rounded" value="0"></label>
+  <label class="flex flex-col" for="notasIngresos2">Notas ingresos (2)      <input id="notasIngresos2" class="border rounded"></label>
+
+  <!-- Deudas S-2 -->
+  <h3 class="col-span-full bg-green-600 text-white rounded px-2 py-1 font-semibold">Deudas S-2</h3>
+  <label class="flex flex-col" for="prestamos2">Préstamos totales (2)   <input id="prestamos2"     type="number" step="0.01" class="border rounded"></label>
+  <label class="flex flex-col" for="cuotaPrestamo2">Cuota mensual (2)       <input id="cuotaPrestamo2" type="number" step="0.01" class="border rounded"></label>
+  <label class="flex flex-col" for="notasDeudas2">Notas deudas (2)        <input id="notasDeudas2"   class="border rounded"></label>
+</div>
+
+<!-- ═════ BLOQUE 4 · INFORMACIÓN BANCARIA ═════ -->
+<h2 data-target="bloqueBanca" class="bg-black text-white rounded px-2 py-1 font-semibold cursor-pointer select-none">
+  Información bancaria <span class="float-right">▶</span>
+</h2>
+
+<div id="bloqueBanca" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 hidden">
+  <label class="flex flex-col req" for="entidadesEnviar1">Entidades a enviar
+    <select id="entidadesEnviar1" class="border rounded w-full">
+      <option value="">—</option>
+    </select>
+  </label>
+
+  <label class="flex flex-col" for="entidadesEnviar2">Entidades a enviar 2
+    <select id="entidadesEnviar2" class="border rounded w-full">
+      <option value="">—</option>
+    </select>
+  </label>
+
+  <label class="flex flex-col" for="entidadesEnviar3">Entidades a enviar 3
+    <select id="entidadesEnviar3" class="border rounded w-full">
+      <option value="">—</option>
+    </select>
+  </label>
+
+  <label class="flex flex-col" for="entidadesEnviar4">Entidades a enviar 4
+    <select id="entidadesEnviar4" class="border rounded w-full">
+      <option value="">—</option>
+    </select>
+  </label>
+
+  <div class="lg:col-span-2 flex flex-col sm:flex-row gap-2">
+    <label class="flex flex-col req flex-1" for="membership">Membership
+      <select id="membership" class="border rounded w-full">
+        <option value="">—</option><option>Basic</option><option>PRO</option><option>Élite</option><option>Add-on</option>
+      </select>
+    </label>
+
+    <label class="flex flex-col flex-1" for="paymentAmount">Payment amount (€)
+      <input id="paymentAmount" type="number" step="0.01" class="border rounded">
+    </label>
+  </div>
+</div>
+
+<!-- ═════ RESULTADOS ═════ -->
+<h2 class="bg-black text-white rounded px-2 py-1 font-semibold">Resultados</h2>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+  <div class="p-3 bg-blue-50 rounded"><p class="font-medium">LTV</p><p id="ltvRes"       class="text-lg font-bold">0 %</p></div>
+
+  <div class="p-3 bg-blue-50 rounded">
+    <p class="font-medium">Gastos (<span id="gastosLabelPct">10</span> %)</p>
+    <p id="gastosRes" class="text-lg font-bold">0 €</p>
+  </div>
+
+  <div class="p-3 bg-blue-50 rounded"><p class="font-medium">Aporte necesario</p><p id="aporteRes"  class="text-lg font-bold">0 €</p></div>
+  <div class="p-3 bg-blue-50 rounded"><p class="font-medium">Cuota mensual</p><p id="cuotaRes"   class="text-lg font-bold">0 €</p></div>
+  <div class="p-3 bg-blue-50 rounded"><p class="font-medium">DTI</p><p id="dtiRes"        class="text-lg font-bold">0 %</p></div>
+  <div class="p-3 bg-blue-50 rounded"><p class="font-medium">Máx. hipotecar</p><p id="maxHipRes" class="text-lg font-bold">0 €</p></div>
+  <div class="p-3 bg-blue-50 rounded">
+    <p class="font-medium">Euríbor 12M (diario, indicativo)</p>
+    <p id="euriborRes" class="text-lg font-bold">— %</p>
+    <p id="euriborMeta" class="text-xs text-slate-600">—</p>
+  </div>
+</div>
+
+<button type="button" id="enviarBtn" class="col-span-full mt-3 bg-green-700 hover:bg-green-800 text-white py-2 rounded-lg">
+  Enviar al CRM
+</button>
+</form>
+  </div>
+  
+
+<!-- ═════ SCRIPTS ═════ -->
+<script>
+/* ----- listas de bancos en desplegables (sin "No bank selected") ----- */
+const bancos = ['Abanca','Bankinter','BBVA','BSCH','CaixaBank','CR Extremadura','CR Granada','CR Teruel','Deutsche Bank','EuroCajaRural','EVO','Globalcaja','Hipotecas.com','Ibercaja','ING','Kutxabank','Laboral Kutxa','No Bank Fee','Pichincha','Sabadell','Santander','Targobank','Unicaja','UCI','Banca March'];
+['bancoCliente','entidadesEnviar1','entidadesEnviar2','entidadesEnviar3','entidadesEnviar4']
+  .forEach(id=>{
+    const sel=document.getElementById(id);
+    const ph=document.createElement('option'); ph.value=''; ph.text='—'; sel.appendChild(ph);
+    bancos.forEach(b=>{const o=document.createElement('option');o.text=b;o.value=b;sel.appendChild(o);});
+  });
+
+/* ----- plegar / desplegar bloques (versión estable) ----- */
+const headings = Array.from(document.querySelectorAll('h2[data-target]'));
+const headingMap = new Map(headings.map(h => [h.dataset.target, h]));
+
+function setBlockState(targetId, open) {
+  const div = document.getElementById(targetId);
+  if (!div) return;
+
+  div.classList.toggle('hidden', !open);
+
+  const heading = headingMap.get(targetId);
+  if (heading) {
+    const icon = heading.querySelector('span');
+    if (icon) icon.textContent = open ? '▼' : '▶';
+  }
+}
+window.setBlockState = setBlockState;
+
+function closeAllExcept(exceptId) {
+  headingMap.forEach((_heading, id) => {
+    if (id !== exceptId) setBlockState(id, false);
+  });
+}
+window.closeAllExcept = closeAllExcept;
+
+headings.forEach(h => {
+  h.addEventListener('click', () => {
+    const targetId = h.dataset.target;
+
+    // No permitir abrir S2 si no está marcada la casilla
+    if (targetId === 'bloqueS2') {
+      const checkbox = document.getElementById('titular2Existe');
+      if (!checkbox || !checkbox.checked) {
+        setBlockState(targetId, false);
+        return;
+      }
+    }
+
+    const div = document.getElementById(targetId);
+    if (!div) return;
+
+    const willOpen = div.classList.contains('hidden');
+    if (willOpen) closeAllExcept(targetId);
+    setBlockState(targetId, willOpen);
+  });
+});
+
+// Estado inicial: solo "Datos de la operación" abierto
+headingMap.forEach((_h, id) => setBlockState(id, id === 'bloqueOperacion'));
+
+
+/* ----- helpers cálculo ----- */
+const num  = id => parseFloat(String(document.getElementById(id)?.value||'').replace(',','.')) || 0;
+const fCur = n  => new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(n);
+const fPct = n  => (n*100).toFixed(3)+' %';
+const cuota = (p,a,t) => {const i=t/1200,n=a*12;return i ? p*i/(1-Math.pow(1+i,-n)) : p/Math.max(n,1)};
+
+const STRESS_DEFAULT = 3.5;
+const NATIONALIDAD_EXAMPLE = 'Española';
+const PAIS_FONDOS_EXAMPLE = 'España';
+const BASE_TITULO = 'Calculadora Hipotecaria – Bayteca';
+
+const OBLIGATORIOS_BASE = [
+  'dealId','tipoOperacion','estadoVivienda','tipoHipoteca','provincia','direccion','codigoPostal',
+  'importePropiedad','importeHipoteca','aniosHipoteca',
+  'entidadesEnviar1','membership'
+];
+
+const OBLIGATORIOS_TITULAR1 = [
+  'nombre1','telefono1','tipoContrato1','antiguedad1','profesion1','fechaNacimiento1',
+  'estadoCivil1','hijos1','tipoDocumento1','documento1','nacionalidad1','origenFondos1',
+  'paisFondos1','familiarPEP1','salario1'
+];
+
+const OBLIGATORIOS_TITULAR2 = [
+  'nombre2','telefono2','tipoContrato2','antiguedad2','profesion2','fechaNacimiento2',
+  'estadoCivil2','hijos2','tipoDocumento2','documento2','nacionalidad2','origenFondos2',
+  'paisFondos2','familiarPEP2','salario2'
+];
+
+function setTasaStressDefault(force = false) {
+  const el = document.getElementById('tasaStress');
+  if (!el) return;
+  if (force || el.value == null || String(el.value).trim() === '') {
+    el.value = STRESS_DEFAULT.toString();
+  }
+}
+
+function setNacionalidadPlaceholders() {
+  ['nacionalidad1','nacionalidad2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.placeholder = NATIONALIDAD_EXAMPLE;
+  });
+}
+
+function setupNacionalidadButtons() {
+  document.querySelectorAll('[data-nacionalidad-btn]').forEach(btn => {
+    const targetId = btn.getAttribute('data-nacionalidad-btn');
+    btn.addEventListener('click', () => {
+      const input = document.getElementById(targetId);
+      if (!input) return;
+      input.value = NATIONALIDAD_EXAMPLE;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      input.focus();
+    });
+  });
+}
+
+function setPaisFondosPlaceholders() {
+  ['paisFondos1','paisFondos2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.placeholder = PAIS_FONDOS_EXAMPLE;
+  });
+}
+
+function setupPaisFondosButtons() {
+  document.querySelectorAll('[data-paisfondos-btn]').forEach(btn => {
+    const targetId = btn.getAttribute('data-paisfondos-btn');
+    btn.addEventListener('click', () => {
+      const input = document.getElementById(targetId);
+      if (!input) return;
+      input.value = PAIS_FONDOS_EXAMPLE;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      input.focus();
+    });
+  });
+}
+
+function camposObligatoriosActuales() {
+  const campos = [...OBLIGATORIOS_BASE, ...OBLIGATORIOS_TITULAR1];
+  const chk = document.getElementById('titular2Existe');
+  if (chk && chk.checked) campos.push(...OBLIGATORIOS_TITULAR2);
+  return Array.from(new Set(campos));
+}
+
+function updateTitular2Availability() {
+  const checkbox = document.getElementById('titular2Existe');
+  const bloque = document.getElementById('bloqueS2');
+  if (!bloque) return;
+
+  const habilitado = !!(checkbox && checkbox.checked);
+
+  bloque.querySelectorAll('input, select, button').forEach(el => {
+    el.disabled = !habilitado;
+    if (!habilitado) {
+      if (el.tagName === 'SELECT') {
+        el.selectedIndex = 0;
+      } else if (el.tagName === 'INPUT') {
+        if (el.type === 'checkbox' || el.type === 'radio') {
+          el.checked = false;
+        } else {
+          el.value = '';
+        }
+      }
+    }
+  });
+
+  bloque.querySelectorAll('.req-t2').forEach(label => {
+    label.classList.toggle('req', habilitado);
+  });
+
+  bloque.classList.toggle('opacity-50', !habilitado);
+  const heading = document.querySelector('h2[data-target="bloqueS2"]');
+  if (heading) {
+    heading.classList.toggle('cursor-pointer', habilitado);
+    heading.classList.toggle('cursor-not-allowed', !habilitado);
+  }
+
+  if (habilitado) {
+    closeAllExcept('bloqueS2');
+    setBlockState('bloqueS2', true);
+  } else {
+    setBlockState('bloqueS2', false);
+  }
+
+  setNacionalidadPlaceholders();
+  setPaisFondosPlaceholders();
+  if (habilitado) initOtrosIngresosDefault();
+}
+
+function setupTitular2Toggle() {
+  const checkbox = document.getElementById('titular2Existe');
+  if (!checkbox) {
+    updateTitular2Availability();
+    return;
+  }
+
+  checkbox.addEventListener('change', () => {
+    updateTitular2Availability();
+    triggerCalc();
+  });
+
+  updateTitular2Availability();
+}
+
+function setupFechaNacimientoLimiters() {
+  const limit = (input) => {
+    if (!input || !input.value) return;
+    if (input.value.length > 10) input.value = input.value.slice(0, 10);
+    const partes = input.value.split('-');
+    if (partes.length === 3 && partes[0].length > 4) {
+      partes[0] = partes[0].slice(0, 4);
+      input.value = partes.join('-');
+    }
+  };
+
+  ['fechaNacimiento1','fechaNacimiento2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const handler = () => limit(el);
+    el.addEventListener('input', handler);
+    el.addEventListener('change', handler);
+    limit(el);
+  });
+}
+
+function calcularEdad(fechaISO) {
+  if (!fechaISO) return '';
+  const fecha = new Date(fechaISO);
+  if (Number.isNaN(fecha.getTime())) return '';
+
+  const hoy = new Date();
+  let edad = hoy.getFullYear() - fecha.getFullYear();
+  const mesDiff = hoy.getMonth() - fecha.getMonth();
+  if (mesDiff < 0 || (mesDiff === 0 && hoy.getDate() < fecha.getDate())) {
+    edad--;
+  }
+  return edad >= 0 ? String(edad) : '';
+}
+
+function setupEdadAutoCalc() {
+  const pairs = [
+    ['fechaNacimiento1', 'edad1'],
+    ['fechaNacimiento2', 'edad2']
+  ];
+
+  pairs.forEach(([fechaId, edadId]) => {
+    const fechaEl = document.getElementById(fechaId);
+    const edadEl = document.getElementById(edadId);
+    if (!fechaEl || !edadEl) return;
+
+    const actualizarEdad = () => {
+      const valor = calcularEdad(fechaEl.value);
+      edadEl.value = valor;
+    };
+
+    fechaEl.addEventListener('input', actualizarEdad);
+    fechaEl.addEventListener('change', actualizarEdad);
+    actualizarEdad();
+  });
+}
+
+function aplicarTituloConsultor(nombre, identificador) {
+  const finalNombre = (nombre && nombre.trim()) || (identificador ? `Consultor ${identificador}` : 'Consultor sin asignar');
+  const texto = `${BASE_TITULO} · ${finalNombre}`;
+  const titulo = document.getElementById('tituloCalculadora');
+  if (titulo) titulo.textContent = texto;
+  document.title = texto;
+}
+
+function inicializarConsultor() {
+  const raw = typeof CONSULTOR === 'string' ? CONSULTOR.trim() : '';
+  const preNombre = typeof CONSULTOR_NOMBRE === 'string' ? CONSULTOR_NOMBRE.trim() : '';
+  const hidden = document.getElementById('consultor');
+  if (hidden) hidden.value = raw || 'Unknown';
+
+  aplicarTituloConsultor(preNombre, raw);
+
+  if (typeof google !== 'undefined' && google.script && raw) {
+    google.script.run
+      .withSuccessHandler(nombre => {
+        if (typeof nombre === 'string' && nombre.trim()) {
+          aplicarTituloConsultor(nombre.trim(), raw);
+        }
+      })
+      .withFailureHandler(() => {})
+      .getConsultorNombre(raw);
+  }
+}
+
+/* ----- poner 0 en inputs numéricos si se quedan vacíos ----- */
+/* ----- default solo para Otros ingresos S-1 y S-2 ----- */
+function initOtrosIngresosDefault() {
+  ['otrosIngresos1','otrosIngresos2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (el.value === '' || el.value == null) el.value = '0';
+  });
+}
+
+
+/* ----- cálculo en vivo (debounced) ----- */
+let calcTimer; 
+function calc(){
+  const P = num('importePropiedad');
+  const H = num('importeHipoteca');
+  const A = num('aniosHipoteca');
+  const T = num('tasaStress');
+
+  // Porcentaje de gastos desde input (default 10%)
+  const porcGastosInput = document.getElementById('porcGastos');
+  const porcGastos = (() => {
+    const v = porcGastosInput ? parseFloat(String(porcGastosInput.value).replace(',','.')) : 10;
+    const n = isFinite(v) ? Math.max(0, Math.min(v, 100)) : 10;
+    return n / 100;
+  })();
+
+  // Cálculos base
+  const ltv   = P ? H / P : 0;
+  const gastos = P * porcGastos;
+  const aporte = P - H + gastos;
+  const cuotaMens = cuota(H, A, T);
+
+  const ingresos = num('salario1') + num('salario2') + num('otrosIngresos1') + num('otrosIngresos2');
+  const deudas   = num('cuotaPrestamo1') + num('cuotaPrestamo2');
+
+  // Capacidad: 35% de ingresos
+  const maxEndeudamiento  = ingresos * 0.35;
+  const capacidadHipoteca = Math.max(maxEndeudamiento - deudas, 0);
+
+  // Conversión de cuota disponible -> hipoteca máxima (30 años, 3%)
+  const Acalc = 30, Tcalc = 3;
+  const factorCuota = Math.max(cuota(1, Acalc, Tcalc), 1e-9);
+  const maxHip = capacidadHipoteca / factorCuota;
+
+  // Precio máximo estimado (si usas ahorro opcional)
+  const ahorro = document.getElementById('ahorro') ? num('ahorro') : 0;
+  const precioMax = (maxHip + ahorro) / (1 - porcGastos);
+
+  // Pintar resultados
+  const dti = ingresos ? (cuotaMens + deudas) / ingresos : 0;
+  document.getElementById('ltvRes').textContent    = fPct(ltv);
+  document.getElementById('gastosRes').textContent = fCur(gastos);
+  document.getElementById('aporteRes').textContent = fCur(aporte);
+  document.getElementById('cuotaRes').textContent  = fCur(cuotaMens);
+  document.getElementById('dtiRes').textContent    = fPct(dti);
+
+  if (document.getElementById('maxHipRes'))    document.getElementById('maxHipRes').textContent = fCur(maxHip);
+  if (document.getElementById('precioMaxRes')) document.getElementById('precioMaxRes').textContent = fCur(precioMax);
+
+  // Actualiza etiqueta "Gastos (… %)"
+  const lbl = document.getElementById('gastosLabelPct');
+  if (lbl) lbl.textContent = (porcGastos * 100).toFixed(2);
+}
+const triggerCalc = () => { clearTimeout(calcTimer); calcTimer = setTimeout(calc, 120); };
+document.querySelectorAll('#formulario input,#formulario select')
+  .forEach(el => ['input','change','keyup'].forEach(evt => el.addEventListener(evt, triggerCalc)));
+setNacionalidadPlaceholders();
+setPaisFondosPlaceholders();
+setTasaStressDefault();
+setupNacionalidadButtons();
+setupPaisFondosButtons();
+setupFechaNacimientoLimiters();
+setupEdadAutoCalc();
+setupTitular2Toggle();
+calc(); // primer cálculo
+initOtrosIngresosDefault(); // solo 0 en Otros ingresos
+inicializarConsultor();
+
+
+/* ===== Euríbor: UI helpers ===== */
+function pintarEuribor(valor, fechaISO, fuente, oficial){
+  const v = (valor==null || isNaN(valor)) ? null : Number(valor);
+  document.getElementById('euriborRes').textContent = v==null ? '— %' : v.toFixed(3)+' %';
+  const etiqueta = oficial ? 'oficial (media mensual BdE/BOE)' : 'indicativo (diario)';
+  const fechaStr = fechaISO ? new Date(fechaISO).toLocaleDateString('es-ES') : '—';
+  document.getElementById('euriborMeta').textContent = `${etiqueta} · ${fechaStr} · fuente: ${fuente||'—'}`;
+}
+
+function usarEuriborComoStress(){
+  const txt = document.getElementById('euriborRes').textContent.trim().replace('%','').replace(',','.');
+  const v = parseFloat(txt);
+  if(!isNaN(v)){
+    document.getElementById('tasaStress').value = v.toFixed(3);
+    triggerCalc();
+  }
+}
+document.getElementById('btnStressDesdeEuribor').addEventListener('click', usarEuriborComoStress);
+
+/* ===== Euríbor: backend call via GAS ===== */
+function refrescarEuribor(){
+  const btn = document.getElementById('btnRefrescarEuribor');
+  btn.disabled = true; btn.textContent = 'Actualizando…';
+
+  const isGAS = typeof google!=='undefined' && google.script;
+  if(isGAS){
+    google.script.run
+      .withSuccessHandler(data=>{
+        pintarEuribor(data?.valor, data?.fechaISO, data?.fuente, data?.oficial);
+        btn.disabled=false; btn.textContent='Actualizar Euríbor';
+      })
+      .withFailureHandler(e=>{
+        pintarEuribor(null, null, 'error', false);
+        alert('No fue posible actualizar el Euríbor.');
+        btn.disabled=false; btn.textContent='Actualizar Euríbor';
+      })
+      .getEuriborActual();
+  }else{
+    // Demo local
+    pintarEuribor(2.100, new Date().toISOString(), 'Demo local', false);
+    btn.disabled=false; btn.textContent='Actualizar Euríbor';
+    console.log('Demo local: para datos reales, ejecutar en entorno GAS.');
+  }
+}
+document.getElementById('btnRefrescarEuribor').addEventListener('click', refrescarEuribor);
+refrescarEuribor();
+document.getElementById('btnResetForm').addEventListener('click', () => {
+  const form = document.getElementById('formulario');
+  if (!form) return;
+
+  form.reset();                     // Limpia todos los inputs/selects
+  initOtrosIngresosDefault();      // Otros ingresos a 0
+  setNacionalidadPlaceholders();   // Nacionalidad por defecto
+  setPaisFondosPlaceholders();     // País procedencia fondos por defecto
+  setTasaStressDefault(true);      // Restablece stress
+  updateTitular2Availability();    // Restablece estado del titular 2
+
+  // Limpia resultados visuales
+  ['ltvRes','gastosRes','aporteRes','cuotaRes','dtiRes','maxHipRes','precioMaxRes'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = '0';
+  });
+
+  // Limpia info de Euríbor (si lo deseas)
+  document.getElementById('euriborRes').textContent = '— %';
+  document.getElementById('euriborMeta').textContent = '—';
+
+  triggerCalc(); // recalcula todo con los nuevos valores
+});
+
+
+/* ----- extracción de datos por Deal ID ----- */
+function normalizarValorHook(valor) {
+  if (valor == null) return '';
+
+  if (Array.isArray(valor)) {
+    for (const item of valor) {
+      const v = normalizarValorHook(item);
+      if (v) return v;
+    }
+    return '';
+  }
+
+  if (typeof valor === 'object') {
+    const preferidos = ['label', 'optionLabel', 'value', 'displayValue', 'name', 'text'];
+    for (const key of preferidos) {
+      if (Object.prototype.hasOwnProperty.call(valor, key)) {
+        const v = normalizarValorHook(valor[key]);
+        if (v) return v;
+      }
+    }
+
+    for (const key of Object.keys(valor)) {
+      const v = normalizarValorHook(valor[key]);
+      if (v) return v;
+    }
+
+    return '';
+  }
+
+  return typeof valor === 'number' ? String(valor) : String(valor || '');
+}
+
+function asignarCampoDesdeHook(idCampo, valor) {
+  const el = document.getElementById(idCampo);
+  if (!el) return;
+
+  const limpioRaw = normalizarValorHook(valor);
+  const limpio = typeof limpioRaw === 'string' ? limpioRaw.trim() : String(limpioRaw || '');
+
+  if (el.tagName === 'SELECT') {
+    const opciones = Array.from(el.options || []);
+    const lower = limpio.toLowerCase();
+    const encontrada = opciones.find(opt => opt.value === limpio || opt.text === limpio)
+      || opciones.find(opt => String(opt.value).toLowerCase() === lower || String(opt.text).toLowerCase() === lower);
+    if (encontrada) {
+      el.value = encontrada.value;
+    } else {
+      el.value = limpio;
+    }
+  } else if (el.type === 'checkbox') {
+    el.checked = limpio === 'true' || limpio === '1' || limpio.toLowerCase() === 'sí';
+  } else {
+    el.value = limpio;
+  }
+
+  el.dispatchEvent(new Event('input', { bubbles: true }));
+  el.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+function manejarRespuestaExtraerDatos(respuesta) {
+  // 1) Seguridad básica
+  if (!respuesta) {
+    alert('No se recibieron datos del webhook.');
+    console.warn('Respuesta vacía:', respuesta);
+    return;
+  }
+
+  // 2) Armo "data" de forma simple (GAS ya debería normalizarla)
+  let data = (respuesta && typeof respuesta.data === 'object') ? respuesta.data : null;
+
+  // Fallback: si data viene vacía, intento raw
+  if (!data || (Object.keys(data).length === 0)) {
+    try {
+      if (typeof respuesta.raw === 'string' && respuesta.raw.trim()) {
+        const parsed = JSON.parse(respuesta.raw);
+        const b = (parsed && (parsed.body || parsed.Body)) || parsed;
+        if (b && typeof b === 'object') data = b;
+      }
+    } catch (e) {/* sin acción */}
+  }
+
+  // 3) Si no hay objeto utilizable, paro
+  if (!data || typeof data !== 'object' || Object.keys(data).length === 0) {
+    alert('⚠️ No hay datos para pintar. (Mira la consola del navegador)');
+    console.warn('Respuesta completa:', respuesta);
+    return;
+  }
+
+  // 4) Alias: traduce nombres del JSON a tus IDs del formulario
+  const ID_ALIASES = {
+    // diferencias que salen en tus capturas
+    comoNosencontroInfo: 'comoNosEncontroInfo',
+    telefonoinfo:        'telefonoInfo',
+    telefono:            'telefonoInfo',
+    telefono1:           'telefonoInfo',
+    nombreUsuario:       'nombreUsuarioInfo',
+    usuario:             'nombreUsuarioInfo',
+    dealID:              'dealId',
+    id:                  'dealId',
+    importe_hipoteca:    'importeHipoteca',
+    importe_propiedad:   'importePropiedad',
+    anosHipoteca:        'aniosHipoteca'
+  };
+
+  // 5) Pinta Deal ID si vino fuera del body
+  if (respuesta.dealId || data.dealId) {
+    asignarCampoDesdeHook('dealId', respuesta.dealId || data.dealId);
+  }
+
+  // 6) Pinta todo lo que coincida por ID (con logs y tolerancia a errores)
+Object.keys(data).forEach(k => {
+  const targetId = ID_ALIASES[k] || k;
+  try {
+    asignarCampoDesdeHook(targetId, data[k]);
+    console.log('[PINTADO OK]', targetId, '←', k, 'valor=', data[k]);
+  } catch (e) {
+    console.warn('[PINTADO FALLÓ]', targetId, '←', k, 'error=', e);
+  }
+});
+
+// Fuerza 3 campos clave para verificar visualmente el pintado
+try { asignarCampoDesdeHook('nombreUsuarioInfo', data.nombreUsuarioInfo || data.nombreUsuario || ''); } catch(e){}
+try { asignarCampoDesdeHook('telefonoInfo', data.telefonoInfo || data.telefono1 || data.telefono || ''); } catch(e){}
+try { asignarCampoDesdeHook('tipoOperacion', data.tipoOperacion || ''); } catch(e){}
+
+
+  // 7) Titular 2 (activar si hay nombre2)
+  const hayTitular2 = (String(data.nombre2 || '').trim() !== '');
+  const chk = document.getElementById('titular2Existe');
+  if (chk) {
+    chk.checked = hayTitular2;
+    chk.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  // 8) Abre bloques y recalcula
+  closeAllExcept('bloqueOperacion');
+  setBlockState('bloqueOperacion', true);
+  setBlockState('bloqueS1', true);
+  if (chk && chk.checked) setBlockState('bloqueS2', true);
+
+  triggerCalc();
+
+  
+
+  alert('✅ Datos extraídos y pintados.');
+}
+
+
+
+
+const extraerDatosBtn = document.getElementById('extraerDatosBtn');
+if (extraerDatosBtn) {
+  extraerDatosBtn.addEventListener('click', () => {
+    const dealInput = document.getElementById('dealId');
+    const dealId = dealInput ? String(dealInput.value || '').trim() : '';
+    if (!dealId) {
+      alert('Introduce un Deal ID antes de extraer los datos.');
+      if (dealInput) dealInput.focus();
+      return;
+    }
+
+    const originalText = extraerDatosBtn.textContent;
+    const restoreBtn = () => {
+      extraerDatosBtn.disabled = false;
+      extraerDatosBtn.textContent = originalText;
+    };
+    
+
+    extraerDatosBtn.disabled = true;
+    extraerDatosBtn.textContent = 'Extrayendo…';
+
+    const isGAS = typeof google !== 'undefined' && google.script;
+    if (isGAS) {
+      google.script.run
+        .withSuccessHandler(respuesta => {
+          restoreBtn();
+          manejarRespuestaExtraerDatos(respuesta);
+        })
+        .withFailureHandler(err => {
+          restoreBtn();
+          alert('Error al extraer datos: ' + err);
+        })
+        .extraerDatos(dealId);
+    } else {
+      console.log('Demo local: simulando extracción para Deal ID', dealId);
+      restoreBtn();
+      manejarRespuestaExtraerDatos({
+        dealId,
+        data: { demo: true, message: 'Simulación local' },
+        raw: null,
+        httpStatus: 200
+      });
+    }
+  });
+}
+
+
+/* ----- envío + validación campos obligatorios ----- */
+document.getElementById('enviarBtn').addEventListener('click',()=>{
+
+  const oblig = camposObligatoriosActuales();
+
+  const vacios = oblig.filter(id=>{
+    const el=document.getElementById(id);
+    if (!el || el.disabled) return false;
+    return !el.value || (el.tagName==='SELECT' && el.selectedIndex===0);
+  });
+
+  if(vacios.length){
+    alert('⚠️ Completa los campos marcados con *');
+    document.getElementById(vacios[0]).focus();
+    return;
+  }
+
+  // construir payload
+  const payload={};
+  document.querySelectorAll('#formulario input,#formulario select')
+    .forEach(el=>{
+      if (!el.id || el.disabled) return;
+      if (el.type === 'checkbox') {
+        payload[el.id] = el.checked ? 'true' : 'false';
+      } else {
+        payload[el.id] = el.value;
+      }
+    });
+  ['ltvRes','gastosRes','aporteRes','cuotaRes','dtiRes','maxHipRes','euriborRes','euriborMeta']
+    .forEach(id=>payload[id]=document.getElementById(id).innerText);
+
+  // No enviar bancos si están vacíos (no disparar procesos en CRM)
+  ['bancoCliente','entidadesEnviar1','entidadesEnviar2','entidadesEnviar3','entidadesEnviar4']
+    .forEach(k => { if (!payload[k]) delete payload[k]; });
+
+  // llamada a Apps Script backend
+  const isGAS = typeof google!=='undefined' && google.script;
+  if(isGAS){
+    google.script.run
+      .withSuccessHandler(()=>{
+        document.getElementById('formulario').reset();
+        initOtrosIngresosDefault(); // solo 0 en Otros ingresos
+        setNacionalidadPlaceholders();
+        setPaisFondosPlaceholders();
+        setTasaStressDefault(true);
+        triggerCalc();
+        alert('Enviado al CRM ✅');
+      })
+      .withFailureHandler(e=>alert('Error: '+e))
+      .enviarACRM(payload);
+  }else{
+    console.log(payload);
+    alert('Demo local — revisa consola.');
+  }
+});
+
+
+
+</script>
+</body>
+</html>
