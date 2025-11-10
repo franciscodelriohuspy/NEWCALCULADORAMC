@@ -302,7 +302,7 @@
   <h3 class="col-span-full bg-green-600 text-white rounded px-2 py-1 font-semibold">Ingresos S-1</h3>
   <label class="flex flex-col req" for="salario1">Salario neto            <input id="salario1"       type="number" step="100" class="border rounded spin-lg"></label>
   <label class="flex flex-col" for="numPagas1">Nº pagas                <input id="numPagas1"      type="number" step="1"    class="border rounded"></label>
-  <label class="flex flex-col" for="otrosIngresos1">Otros ingresos          <input id="otrosIngresos1" type="number" step="0.01" class="border rounded" value="0"></label>
+  <label class="flex flex-col" for="otrosIngresos1">Otros ingresos          <input id="otrosIngresos1" type="number" step="0.01" inputmode="decimal" class="border rounded" value="0"></label>
   <label class="flex flex-col" for="notasIngresos1">Notas ingresos          <input id="notasIngresos1" class="border rounded"></label>
 
   <!-- Deudas S-1 -->
@@ -382,7 +382,7 @@
   <h3 class="col-span-full bg-green-600 text-white rounded px-2 py-1 font-semibold">Ingresos S-2</h3>
   <label class="flex flex-col req-t2" for="salario2">Salario neto (2)        <input id="salario2"       type="number" step="100" class="border rounded spin-lg"></label>
   <label class="flex flex-col" for="numPagas2">Nº pagas (2)            <input id="numPagas2"      type="number" step="1"    class="border rounded"></label>
-  <label class="flex flex-col" for="otrosIngresos2">Otros ingresos (2)      <input id="otrosIngresos2" type="number" step="0.01" class="border rounded" value="0"></label>
+  <label class="flex flex-col" for="otrosIngresos2">Otros ingresos (2)      <input id="otrosIngresos2" type="number" step="0.01" inputmode="decimal" class="border rounded" value="0"></label>
   <label class="flex flex-col" for="notasIngresos2">Notas ingresos (2)      <input id="notasIngresos2" class="border rounded"></label>
 
   <!-- Deudas S-2 -->
@@ -821,13 +821,23 @@ function calcularEdad(fechaISO) {
   return edad >= 0 ? String(edad) : '';
 }
 
-function setupEdadAutoCalc() {
-  const pairs = [
-    ['fechaNacimiento1', 'edad1'],
-    ['fechaNacimiento2', 'edad2']
-  ];
+const PARES_EDAD = [
+  ['fechaNacimiento1', 'edad1'],
+  ['fechaNacimiento2', 'edad2']
+];
 
-  pairs.forEach(([fechaId, edadId]) => {
+function recalcularEdadCampos() {
+  PARES_EDAD.forEach(([fechaId, edadId]) => {
+    const edadEl = document.getElementById(edadId);
+    if (!edadEl) return;
+    const fechaEl = document.getElementById(fechaId);
+    const valor = fechaEl ? calcularEdad(fechaEl.value) : '';
+    edadEl.value = valor;
+  });
+}
+
+function setupEdadAutoCalc() {
+  PARES_EDAD.forEach(([fechaId, edadId]) => {
     const fechaEl = document.getElementById(fechaId);
     const edadEl = document.getElementById(edadId);
     if (!fechaEl || !edadEl) return;
@@ -839,8 +849,9 @@ function setupEdadAutoCalc() {
 
     fechaEl.addEventListener('input', actualizarEdad);
     fechaEl.addEventListener('change', actualizarEdad);
-    actualizarEdad();
   });
+
+  recalcularEdadCampos();
 }
 
 function aplicarTituloConsultor(nombre, identificador) {
@@ -871,13 +882,60 @@ function inicializarConsultor() {
   }
 }
 
-/* ----- poner 0 en inputs numéricos si se quedan vacíos ----- */
-/* ----- default solo para Otros ingresos S-1 y S-2 ----- */
+/* ----- controles específicos para Otros ingresos ----- */
+function normalizarOtrosIngresosValor(valor, fallback = '0') {
+  if (valor == null) return fallback;
+  let texto = String(valor).replace(/,/g, '.').replace(/[^0-9.]/g, '');
+  const punto = texto.indexOf('.');
+  if (punto !== -1) {
+    const antes = texto.slice(0, punto + 1);
+    const despues = texto.slice(punto + 1).replace(/\./g, '');
+    texto = antes + despues;
+  }
+  if (!texto) return fallback;
+  const numero = parseFloat(texto);
+  return Number.isFinite(numero) ? String(numero) : fallback;
+}
+
+function prepararCampoOtrosIngresos(el) {
+  if (!el) return;
+
+  const filtrarCaracteres = () => {
+    const actual = String(el.value || '');
+    let filtrado = actual.replace(/,/g, '.').replace(/[^0-9.]/g, '');
+    const punto = filtrado.indexOf('.');
+    if (punto !== -1) {
+      filtrado = filtrado.slice(0, punto + 1) + filtrado.slice(punto + 1).replace(/\./g, '');
+    }
+    if (filtrado !== actual) el.value = filtrado;
+  };
+
+  const aplicarFormato = () => {
+    el.value = normalizarOtrosIngresosValor(el.value, '0');
+  };
+
+  el.addEventListener('input', filtrarCaracteres);
+  el.addEventListener('blur', aplicarFormato);
+  el.addEventListener('change', aplicarFormato);
+
+  aplicarFormato();
+}
+
+function setupOtrosIngresosNumericOnly() {
+  ['otrosIngresos1','otrosIngresos2'].forEach(id => {
+    prepararCampoOtrosIngresos(document.getElementById(id));
+  });
+}
+
 function initOtrosIngresosDefault() {
   ['otrosIngresos1','otrosIngresos2'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
-    if (el.value === '' || el.value == null) el.value = '0';
+    if (!String(el.value || '').trim()) {
+      el.value = '0';
+    } else {
+      el.value = normalizarOtrosIngresosValor(el.value, '0');
+    }
   });
 }
 
@@ -952,6 +1010,7 @@ if (formularioEl) {
 setupFechaNacimientoLimiters();
 setupEdadAutoCalc();
 setupTitular2Toggle();
+setupOtrosIngresosNumericOnly();
 calc(); // primer cálculo
 initOtrosIngresosDefault(); // solo 0 en Otros ingresos
 inicializarConsultor();
@@ -1008,6 +1067,7 @@ document.getElementById('btnResetForm').addEventListener('click', () => {
   if (!form) return;
 
   form.reset();                     // Limpia todos los inputs/selects
+  recalcularEdadCampos();
   initOtrosIngresosDefault();      // Otros ingresos a 0
   setNacionalidadPlaceholders();   // Nacionalidad por defecto
   setPaisFondosPlaceholders();     // País procedencia fondos por defecto
@@ -1061,6 +1121,9 @@ function normalizarValorHook(valor) {
 }
 
 function asignarCampoDesdeHook(idCampo, valor) {
+  if (idCampo === 'edad1' || idCampo === 'edad2') {
+    return;
+  }
   const el = document.getElementById(idCampo);
   if (!el) return;
 
@@ -1168,9 +1231,10 @@ try { asignarCampoDesdeHook('tipoOperacion', data.tipoOperacion || ''); } catch(
   setBlockState('bloqueS1', true);
   if (chk && chk.checked) setBlockState('bloqueS2', true);
 
+  recalcularEdadCampos();
   triggerCalc();
 
-  
+
 
   alert('✅ Datos extraídos y pintados.');
 }
